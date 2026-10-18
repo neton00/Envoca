@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1560d8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="DAY 01 단어장">
+<meta name="format-detection" content="telephone=no">
+<title>DAY 01 영어 단어장</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<style>
+:root{
+  --bg:#f4f6fa; --card:#fff; --ink:#172033; --muted:#667085; --line:#e3e8f0;
+  --brand:#1560d8; --brand-soft:#eaf1fe; --brand-deep:#0d3f93;
+  --ok:#0f8a5f; --ok-soft:#e7f7ef; --no:#d43c4a; --no-soft:#fdecee;
+  --shadow:0 1px 2px rgba(16,32,64,.04),0 8px 24px rgba(16,32,64,.07);
+  --r:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0e1420; --card:#161e2c; --ink:#edf2f7; --muted:#9aa6ba; --line:#283349;
+    --brand:#6a9cff; --brand-soft:#1a2740; --brand-deep:#b8ceff;
+    --ok:#52d1a2; --ok-soft:#133027; --no:#ff7d8b; --no-soft:#351a20;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.30);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);min-height:100%;}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",sans-serif;
+  line-height:1.55;-webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
+}
+button,input,select{font:inherit}
+button{touch-action:manipulation}
+.wrap{max-width:900px;margin:0 auto;padding:22px 16px 72px}
+.top{margin:4px 0 16px}
+.eyebrow{font-size:13px;font-weight:800;color:var(--brand);letter-spacing:.04em}
+h1{font-size:28px;line-height:1.25;margin:4px 0 5px;letter-spacing:-.025em}
+.sub{margin:0;color:var(--muted);font-size:14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+
+.home-help{
+  display:none;margin-bottom:14px;padding:13px 15px;font-size:13.5px;
+  background:var(--brand-soft);border-color:var(--brand);line-height:1.6
+}
+.home-help b{color:var(--brand-deep)}
+.home-help .close-help{float:right;border:0;background:transparent;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+
+.study-toolbar{padding:12px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:180px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:11px 13px;min-height:44px}
+.select{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:9px 10px;min-height:44px}
+.btn{
+  border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:11px;padding:10px 15px;min-height:44px;font-weight:700;cursor:pointer;
+}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:white}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:white}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:hover:not(:disabled){border-color:var(--brand)}
+.spacer{flex:1}
+
+.word-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.word-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px 16px;display:flex;gap:12px;box-shadow:var(--shadow);min-height:105px}
+.word-index{font-size:12px;font-weight:800;color:var(--muted);padding-top:4px;min-width:24px}
+.word-main{flex:1;min-width:0}
+.word-top{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.word-en{font-size:24px;font-weight:800;letter-spacing:-.01em;word-break:break-word}
+.word-ko{font-size:16px;color:var(--muted);margin-top:4px}
+.sound-btn{width:44px;height:44px;min-width:44px;border-radius:50%;border:1px solid var(--line);background:var(--brand-soft);cursor:pointer;font-size:18px}
+.sound-btn:active{transform:scale(.96)}
+.study-bottom{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));margin-top:18px;display:flex;justify-content:center;pointer-events:none}
+.study-bottom .btn{pointer-events:auto;min-width:180px;box-shadow:0 8px 24px rgba(21,96,216,.25)}
+
+.quiz-controls{padding:12px 14px;margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:7px 11px;min-height:38px;cursor:pointer;font-size:13px}
+.chip.on{background:var(--brand);border-color:var(--brand);color:white;font-weight:700}
+
+.progress{padding:14px 16px;margin-bottom:14px}
+.prog-head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.stat{font-size:13px;color:var(--muted)} .stat b{color:var(--ink);font-size:15px}
+.stat.ok b{color:var(--ok)} .stat.no b{color:var(--no)}
+.bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0;background:var(--brand);border-radius:99px;transition:width .25s}
+
+.qcard{padding:20px;margin-bottom:14px}
+.qmeta{display:flex;gap:7px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--brand-soft);color:var(--brand-deep)}
+.tag.num{background:var(--brand);color:#fff}
+.qtext{font-size:21px;font-weight:800;margin:0 0 15px;line-height:1.45;letter-spacing:-.01em}
+.qsound{margin-left:7px;vertical-align:middle}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{width:100%;display:flex;gap:11px;align-items:flex-start;text-align:left;padding:13px 14px;min-height:52px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.opt .n{flex:none;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:var(--line);color:var(--muted);font-size:12px;font-weight:800}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)} .opt.correct .n{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--no);background:var(--no-soft)} .opt.wrong .n{background:var(--no);color:#fff}
+.opt:disabled{cursor:default}
+.mark{margin-left:auto;font-size:13px;font-weight:800}
+.correct .mark{color:var(--ok)} .wrong .mark{color:var(--no)}
+.exp{display:none;margin-top:13px;padding:12px 14px;border-radius:11px;background:var(--brand-soft);font-size:14px}
+.exp.show{display:block}
+.nav{display:flex;gap:8px;margin-top:15px;padding-top:14px;border-top:1px solid var(--line)}
+
+.palette{margin-bottom:14px;overflow:hidden}
+.palette summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:14px}
+.pal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px;padding:0 16px 16px}
+.cell{aspect-ratio:1;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;font-weight:700;cursor:pointer}
+.cell.o{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.cell.x{background:var(--no-soft);border-color:var(--no);color:var(--no)}
+.cell.cur{outline:2px solid var(--brand);outline-offset:1px}
+
+.result{padding:28px 20px;text-align:center}
+.score{font-size:48px;font-weight:900;margin:5px 0 2px}
+.result-sub{color:var(--muted);margin-bottom:20px}
+.result-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.hidden{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px;line-height:1.7}
+
+@media(max-width:650px){
+  .word-grid{grid-template-columns:1fr}
+  .word-card{min-height:92px}
+  h1{font-size:24px}
+  .qtext{font-size:19px}
+}
+@media(min-width:900px){
+  .word-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">영어 단어 학습</div>
+    <h1>DAY 01 단어장</h1>
+    <p class="sub">단어를 먼저 익히고, 준비되면 문제 풀기를 시작하세요.</p>
+  </header>
+
+  <section class="panel home-help" id="homeHelp">
+    <button class="close-help" id="closeHelp" aria-label="닫기">×</button>
+    <b>iPad에서 앱처럼 쓰기</b><br>
+    Safari의 공유 메뉴에서 <b>홈 화면에 추가</b>를 선택하면 다음부터 앱처럼 바로 열 수 있어요.
+  </section>
+
+  <section id="studyView">
+    <div class="panel study-toolbar">
+      <input class="search" id="search" type="search" placeholder="단어 또는 뜻 검색" autocomplete="off">
+      <select class="select" id="accent">
+        <option value="en-US">🇺🇸 미국식</option>
+        <option value="en-GB">🇬🇧 영국식</option>
+      </select>
+      <select class="select" id="speechRate">
+        <option value="0.7">0.7×</option>
+        <option value="0.85" selected>0.85×</option>
+        <option value="1">1.0×</option>
+      </select>
+    </div>
+
+    <div class="word-grid" id="wordGrid">
+
+    <article class="word-card" data-search="area 지역, 면적">
+      <div class="word-index">01</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">area</div>
+          <button class="sound-btn" type="button" data-speak="area" aria-label="area 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">지역, 면적</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="show 보여주다">
+      <div class="word-index">02</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">show</div>
+          <button class="sound-btn" type="button" data-speak="show" aria-label="show 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">보여주다</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="think 생각하다">
+      <div class="word-index">03</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">think</div>
+          <button class="sound-btn" type="button" data-speak="think" aria-label="think 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">생각하다</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="problem 문제">
+      <div class="word-index">04</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">problem</div>
+          <button class="sound-btn" type="button" data-speak="problem" aria-label="problem 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">문제</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="never 결코 ~않다">
+      <div class="word-index">05</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">never</div>
+          <button class="sound-btn" type="button" data-speak="never" aria-label="never 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">결코 ~않다</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="most 가장 많은">
+      <div class="word-index">06</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">most</div>
+          <button class="sound-btn" type="button" data-speak="most" aria-label="most 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">가장 많은</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="try 노력하다">
+      <div class="word-index">07</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">try</div>
+          <button class="sound-btn" type="button" data-speak="try" aria-label="try 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">노력하다</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="call ~라고 부르다, 전화하다">
+      <div class="word-index">08</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">call</div>
+          <button class="sound-btn" type="button" data-speak="call" aria-label="call 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">~라고 부르다, 전화하다</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="high 높게">
+      <div class="word-index">09</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">high</div>
+          <button class="sound-btn" type="button" data-speak="high" aria-label="high 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">높게</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="something 어떤 것">
+      <div class="word-index">10</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">something</div>
+          <button class="sound-btn" type="button" data-speak="something" aria-label="something 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">어떤 것</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="school 학교, 수업">
+      <div class="word-index">11</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">school</div>
+          <button class="sound-btn" type="button" data-speak="school" aria-label="school 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">학교, 수업</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="small 작은">
+      <div class="word-index">12</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">small</div>
+          <button class="sound-btn" type="button" data-speak="small" aria-label="small 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">작은</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="place 장소">
+      <div class="word-index">13</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">place</div>
+          <button class="sound-btn" type="button" data-speak="place" aria-label="place 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">장소</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="why 왜">
+      <div class="word-index">14</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">why</div>
+          <button class="sound-btn" type="button" data-speak="why" aria-label="why 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">왜</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="away 떨어져서">
+      <div class="word-index">15</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">away</div>
+          <button class="sound-btn" type="button" data-speak="away" aria-label="away 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">떨어져서</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="keep 유지하다, 보관하다">
+      <div class="word-index">16</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">keep</div>
+          <button class="sound-btn" type="button" data-speak="keep" aria-label="keep 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">유지하다, 보관하다</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="point 가리키다, 지시하다">
+      <div class="word-index">17</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">point</div>
+          <button class="sound-btn" type="button" data-speak="point" aria-label="point 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">가리키다, 지시하다</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="house 집">
+      <div class="word-index">18</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">house</div>
+          <button class="sound-btn" type="button" data-speak="house" aria-label="house 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">집</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="different 다른">
+      <div class="word-index">19</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">different</div>
+          <button class="sound-btn" type="button" data-speak="different" aria-label="different 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">다른</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="country 나라, 국가">
+      <div class="word-index">20</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">country</div>
+          <button class="sound-btn" type="button" data-speak="country" aria-label="country 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">나라, 국가</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="really 정말로">
+      <div class="word-index">21</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">really</div>
+          <button class="sound-btn" type="button" data-speak="really" aria-label="really 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">정말로</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="week 주, 일주일">
+      <div class="word-index">22</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">week</div>
+          <button class="sound-btn" type="button" data-speak="week" aria-label="week 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">주, 일주일</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="large 큰">
+      <div class="word-index">23</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">large</div>
+          <button class="sound-btn" type="button" data-speak="large" aria-label="large 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">큰</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="member 회원">
+      <div class="word-index">24</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">member</div>
+          <button class="sound-btn" type="button" data-speak="member" aria-label="member 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">회원</div>
+      </div>
+    </article>
+    
+
+    <article class="word-card" data-search="always 항상">
+      <div class="word-index">25</div>
+      <div class="word-main">
+        <div class="word-top">
+          <div class="word-en">always</div>
+          <button class="sound-btn" type="button" data-speak="always" aria-label="always 발음 듣기">🔊</button>
+        </div>
+        <div class="word-ko">항상</div>
+      </div>
+    </article>
+    
+    </div>
+
+    <div class="study-bottom">
+      <button class="btn primary" id="startQuiz">문제 풀기</button>
+    </div>
+  </section>
+
+  <section id="quizView" class="hidden">
+    <div class="panel quiz-controls">
+      <button class="chip on" data-mode="en-ko">영어 → 뜻</button>
+      <button class="chip" data-mode="ko-en">뜻 → 영어</button>
+      <button class="chip" data-mode="mixed">섞어서</button>
+      <span class="spacer"></span>
+      <button class="btn" id="backStudy">단어 보기</button>
+    </div>
+
+    <section class="panel progress">
+      <div class="prog-head">
+        <span class="stat">진도 <b><span id="doneN">0</span> / <span id="totalN">25</span></b></span>
+        <span class="stat ok">정답 <b id="okN">0</b></span>
+        <span class="stat no">오답 <b id="noN">0</b></span>
+        <span class="spacer"></span>
+        <span class="stat">정답률 <b id="correctRate">—</b></span>
+      </div>
+      <div class="bar"><i id="barFill"></i></div>
+    </section>
+
+    <details class="panel palette">
+      <summary>문제 번호로 이동</summary>
+      <div class="pal-grid" id="palette"></div>
+    </details>
+
+    <main id="stage"></main>
+  </section>
+
+  <footer>
+    DAY 01 · 발음은 iPad/Safari의 영어 음성을 사용합니다.<br>
+    학습 기록은 이 기기의 브라우저에 저장됩니다.
+  </footer>
+</div>
+
+<script>
+const WORDS = [{"word": "area", "meaning": "지역, 면적"}, {"word": "show", "meaning": "보여주다"}, {"word": "think", "meaning": "생각하다"}, {"word": "problem", "meaning": "문제"}, {"word": "never", "meaning": "결코 ~않다"}, {"word": "most", "meaning": "가장 많은"}, {"word": "try", "meaning": "노력하다"}, {"word": "call", "meaning": "~라고 부르다, 전화하다"}, {"word": "high", "meaning": "높게"}, {"word": "something", "meaning": "어떤 것"}, {"word": "school", "meaning": "학교, 수업"}, {"word": "small", "meaning": "작은"}, {"word": "place", "meaning": "장소"}, {"word": "why", "meaning": "왜"}, {"word": "away", "meaning": "떨어져서"}, {"word": "keep", "meaning": "유지하다, 보관하다"}, {"word": "point", "meaning": "가리키다, 지시하다"}, {"word": "house", "meaning": "집"}, {"word": "different", "meaning": "다른"}, {"word": "country", "meaning": "나라, 국가"}, {"word": "really", "meaning": "정말로"}, {"word": "week", "meaning": "주, 일주일"}, {"word": "large", "meaning": "큰"}, {"word": "member", "meaning": "회원"}, {"word": "always", "meaning": "항상"}];
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const STORAGE_KEY = "day01_vocab_progress_v2";
+let synth = window.speechSynthesis;
+let voices = [];
+let mode = "en-ko";
+let quiz = [];
+let current = 0;
+let answers = {};
+
+function loadVoices() {
+  if (!synth) return;
+  voices = synth.getVoices() || [];
+}
+loadVoices();
+if (synth && "onvoiceschanged" in synth) synth.onvoiceschanged = loadVoices;
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) {
+    alert("이 브라우저에서는 발음 기능을 사용할 수 없어요.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  loadVoices();
+  const u = new SpeechSynthesisUtterance(text);
+  const lang = $("#accent").value || "en-US";
+  u.lang = lang;
+  u.rate = Number($("#speechRate").value || 0.85);
+  const exact = voices.find(v => v.lang === lang);
+  const fallback = voices.find(v => (v.lang || "").toLowerCase().startsWith(lang.slice(0,2).toLowerCase()));
+  if (exact || fallback) u.voice = exact || fallback;
+  window.speechSynthesis.speak(u);
+}
+
+$$("[data-speak]").forEach(btn => btn.addEventListener("click", () => speak(btn.dataset.speak)));
+
+$("#search").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  $$(".word-card").forEach(card => {
+    card.style.display = card.dataset.search.toLowerCase().includes(q) ? "" : "none";
+  });
+});
+
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+function isStandalone() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+if (isIOS() && !isStandalone() && !localStorage.getItem("hideHomeHelp")) {
+  $("#homeHelp").style.display = "block";
+}
+$("#closeHelp").addEventListener("click", () => {
+  $("#homeHelp").style.display = "none";
+  localStorage.setItem("hideHomeHelp","1");
+});
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz() {
+  quiz = WORDS.map((w, i) => {
+    const qmode = mode === "mixed" ? (Math.random() < .5 ? "en-ko" : "ko-en") : mode;
+    const other = WORDS.filter((_,j)=>j!==i);
+    const distractors = shuffle(other).slice(0,3);
+    const options = qmode === "en-ko"
+      ? shuffle([w, ...distractors].map(x => x.meaning))
+      : shuffle([w, ...distractors].map(x => x.word));
+    const correctText = qmode === "en-ko" ? w.meaning : w.word;
+    return {
+      index:i, word:w.word, meaning:w.meaning, qmode,
+      q: qmode === "en-ko" ? w.word : w.meaning,
+      options, answer: options.indexOf(correctText)
+    };
+  });
+  current = 0;
+  answers = {};
+  save();
+  renderPalette();
+  renderQuestion();
+  updateProgress();
+}
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({mode,quiz,current,answers}));
+  } catch(e) {}
+}
+
+function renderPalette() {
+  $("#palette").innerHTML = quiz.map((_,i)=>`<button class="cell" data-go="${i}">${i+1}</button>`).join("");
+  $$("#palette .cell").forEach(c=>c.addEventListener("click",()=>{
+    current=Number(c.dataset.go); renderQuestion(); save();
+  }));
+  paintPalette();
+}
+
+function paintPalette() {
+  $$("#palette .cell").forEach((c,i)=>{
+    c.classList.remove("o","x","cur");
+    if (answers[i]) c.classList.add(answers[i].correct ? "o":"x");
+    if (i===current) c.classList.add("cur");
+  });
+}
+
+function updateProgress() {
+  const done = Object.keys(answers).length;
+  const ok = Object.values(answers).filter(a=>a.correct).length;
+  const no = done-ok;
+  $("#doneN").textContent=done;
+  $("#totalN").textContent=quiz.length;
+  $("#okN").textContent=ok;
+  $("#noN").textContent=no;
+  $("#correctRate").textContent=done ? Math.round(ok/done*100)+"%" : "—";
+  $("#barFill").style.width=(quiz.length ? done/quiz.length*100 : 0)+"%";
+  paintPalette();
+}
+
+function renderQuestion() {
+  if (!quiz.length) return;
+  const q = quiz[current];
+  const answered = answers[current];
+  const sound = q.qmode === "en-ko"
+    ? `<button class="sound-btn qsound" type="button" id="qSpeak" aria-label="발음 듣기">🔊</button>`
+    : "";
+  $("#stage").innerHTML = `
+    <section class="panel qcard">
+      <div class="qmeta"><span class="tag num">${current+1}</span><span class="tag">${q.qmode==="en-ko" ? "영어 → 뜻" : "뜻 → 영어"}</span></div>
+      <h2 class="qtext">${escapeHtml(q.q)} ${sound}</h2>
+      <div class="opts">
+        ${q.options.map((o,i)=>`
+          <button class="opt" data-i="${i}" ${answered?"disabled":""}>
+            <span class="n">${i+1}</span><span>${escapeHtml(o)}</span><span class="mark"></span>
+          </button>`).join("")}
+      </div>
+      <div class="exp ${answered?"show":""}" id="explain">
+        정답: <b>${escapeHtml(q.qmode==="en-ko" ? q.meaning : q.word)}</b>
+      </div>
+      <div class="nav">
+        <button class="btn" id="prevBtn" ${current===0?"disabled":""}>이전</button>
+        <span class="spacer"></span>
+        <button class="btn primary" id="nextBtn">${current===quiz.length-1 ? "결과 보기":"다음"}</button>
+      </div>
+    </section>`;
+  if ($("#qSpeak")) $("#qSpeak").onclick=()=>speak(q.word);
+  $$(".opt").forEach(btn=>btn.addEventListener("click",()=>answer(Number(btn.dataset.i))));
+  if (answered) paintAnswer(answered.choice);
+  $("#prevBtn").onclick=()=>{if(current>0){current--;renderQuestion();save();}};
+  $("#nextBtn").onclick=()=>{
+    if(current===quiz.length-1) renderResult();
+    else {current++;renderQuestion();save();}
+  };
+  paintPalette();
+}
+
+function answer(choice) {
+  if (answers[current]) return;
+  const q=quiz[current];
+  answers[current]={choice,correct:choice===q.answer};
+  paintAnswer(choice);
+  $("#explain").classList.add("show");
+  updateProgress();
+  save();
+}
+
+function paintAnswer(choice) {
+  const q=quiz[current];
+  $$(".opt").forEach((btn,i)=>{
+    btn.disabled=true;
+    const mark=btn.querySelector(".mark");
+    if(i===q.answer){btn.classList.add("correct");mark.textContent="정답";}
+    if(i===choice && i!==q.answer){btn.classList.add("wrong");mark.textContent="오답";}
+  });
+}
+
+function renderResult() {
+  const done=Object.keys(answers).length;
+  const ok=Object.values(answers).filter(a=>a.correct).length;
+  const pct=quiz.length ? Math.round(ok/quiz.length*100):0;
+  $("#stage").innerHTML=`
+    <section class="panel result">
+      <div class="eyebrow">DAY 01 결과</div>
+      <div class="score">${ok} <small>/ ${quiz.length}</small></div>
+      <div class="result-sub">정답률 ${pct}% · 아직 풀지 않은 문제 ${quiz.length-done}개</div>
+      <div class="result-actions">
+        <button class="btn" id="retryWrong">오답 다시 풀기</button>
+        <button class="btn primary" id="retryAll">처음부터 다시 풀기</button>
+        <button class="btn" id="resultStudy">단어 보기</button>
+      </div>
+    </section>`;
+  $("#retryAll").onclick=buildQuiz;
+  $("#resultStudy").onclick=showStudy;
+  $("#retryWrong").onclick=()=>{
+    const wrongIdx=Object.entries(answers).filter(([_,a])=>!a.correct).map(([i])=>Number(i));
+    if(!wrongIdx.length){alert("오답이 없어요!");return;}
+    quiz=wrongIdx.map(i=>quiz[i]);
+    current=0;answers={};renderPalette();renderQuestion();updateProgress();save();
+  };
+}
+
+function showStudy() {
+  $("#quizView").classList.add("hidden");
+  $("#studyView").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showQuiz() {
+  $("#studyView").classList.add("hidden");
+  $("#quizView").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+  buildQuiz();
+}
+
+$("#startQuiz").onclick=showQuiz;
+$("#backStudy").onclick=showStudy;
+
+$$("[data-mode]").forEach(btn=>btn.addEventListener("click",()=>{
+  mode=btn.dataset.mode;
+  $$("[data-mode]").forEach(b=>b.classList.toggle("on",b===btn));
+  buildQuiz();
+}));
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+}
+
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
